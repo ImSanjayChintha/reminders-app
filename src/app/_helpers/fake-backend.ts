@@ -4,14 +4,16 @@ import { Observable, of, throwError } from 'rxjs';
 import { delay, materialize, dematerialize } from 'rxjs/operators';
 
 // array in local storage for registered users
-const usersKey = 'angular-10-registration-login-example-users';
+const usersKey = 'reminders';
+const currentUserKey = 'user';
 let users = JSON.parse(localStorage.getItem(usersKey)) || [];
+
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const { url, method, headers, body } = request;
-
+        let loggedInUser:any = JSON.parse(localStorage.getItem(currentUserKey)) || [];;
         return handleRoute();
 
         function handleRoute() {
@@ -40,13 +42,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             const { username, password } = body;
             const user = users.find(x => x.username === username && x.password === password);
             if (!user) return error('Username or password is incorrect');
+          
             return ok({
                 ...basicDetails(user),
                 token: 'fake-jwt-token'
             })
         }
 
-        function register() {
+        function register() {   
+                     
             const user = body
 
             if (users.find(x => x.username === user.username)) {
@@ -54,20 +58,27 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             }
 
             user.id = users.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
+            const loggedUser = loggedInUser;
+            user.createdBy = loggedUser && loggedUser.length != 0 ? loggedUser.id : user.id ;
             users.push(user);
             localStorage.setItem(usersKey, JSON.stringify(users));
             return ok();
         }
 
         function getUsers() {
-            if (!isLoggedIn()) return unauthorized();
-            return ok(users.map(x => basicDetails(x)));
+            if (!isLoggedIn()) return unauthorized();            
+            const createdBy = loggedInUser.id;
+            let currentUsers = JSON.parse(localStorage.getItem(usersKey)) || [];;
+            let userList = [currentUsers.filter(x => x.createdBy == createdBy)];
+            userList = userList.length > 0 ? userList[0] : userList;
+            return ok(userList.map(x => basicDetails(x)));
         }
 
         function getUserById() {
             if (!isLoggedIn()) return unauthorized();
 
             const user = users.find(x => x.id === idFromUrl());
+           
             return ok(basicDetails(user));
         }
 
@@ -115,8 +126,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         }
 
         function basicDetails(user) {
-            const { id, username, firstName, lastName } = user;
-            return { id, username, firstName, lastName };
+            const { id, username, firstName, lastName, createdBy } = user;
+            return { id, username, firstName, lastName, createdBy };
         }
 
         function isLoggedIn() {

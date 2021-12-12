@@ -4,5 +4,6 @@
     password: string;
     firstName: string;
     lastName: string;
+    createdBy: string;
     token: string;
 }
