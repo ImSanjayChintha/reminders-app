@@ -22,7 +22,9 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDialogModule} from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule, NgxMatNativeDateModule } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
     imports: [
@@ -43,6 +45,9 @@ import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-mat
         MatTableModule,
         NgxMatDatetimePickerModule,
         NgxMatTimepickerModule,
+        NgxMatMomentModule,
+        MatDatepickerModule,
+        NgxMatNativeDateModule,
         FormsModule],
     declarations: [
         AppComponent,
