@@ -5,7 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // used to create fake backend
 import { fakeBackendProvider } from './_helpers';
-
+import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { AppComponent } from './app.component';
@@ -22,6 +22,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDialogModule} from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 
 @NgModule({
     imports: [
@@ -39,7 +40,10 @@ import { MatTableModule } from '@angular/material/table';
         MatFormFieldModule,
         MatDialogModule,
         MatInputModule,
-        MatTableModule],
+        MatTableModule,
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule,
+        FormsModule],
     declarations: [
         AppComponent,
         AlertComponent,
