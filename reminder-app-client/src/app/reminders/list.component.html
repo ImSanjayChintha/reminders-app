@@ -1,0 +1,32 @@
+<h1>Reminders</h1>
+<a routerLink="add" class="btn btn-sm btn-success mb-2">Add Reminder</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width: 30%">Id</th>
+            <th style="width: 30%">Event Id</th>
+            <th style="width: 30%">Event Title</th>           
+            <th style="width: 10%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let reminder of reminders">
+            <td>{{reminder.id}}</td>
+            <td>{{reminder.eventId}}</td>
+            <td>{{reminder.header}}</td>
+            <td>{{reminder.scheduledTime}}</td>
+            <td style="white-space: nowrap">
+                <a routerLink="edit/{{reminder.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>
+                <button (click)="deleteReminder(reminder.id)" class="btn btn-sm btn-danger btn-delete-user" [disabled]="reminder.isDeleting">
+                    <span *ngIf="reminder.isDeleting" class="spinner-border spinner-border-sm"></span>
+                    <span *ngIf="!reminder.isDeleting">Delete</span>
+                </button>
+            </td>
+        </tr>
+        <tr *ngIf="!reminders">
+            <td colspan="4" class="text-center">
+                <span class="spinner-border spinner-border-lg align-center"></span>
+            </td>
+        </tr>
+    </tbody>
+</table>

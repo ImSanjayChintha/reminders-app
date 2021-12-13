@@ -29,16 +29,15 @@ export class LayoutComponent{
       });
   }
 
-  openAlertDialog() {
+  openAlertDialog(action,obj) {
+    obj.action = action;
     const dialogRef = this.dialog.open(AlertDialogComponent,{
-      data:{
-        message: 'HelloWorld'
-      },
+      width: '350px',
+      data:obj
     });
 
-    dialogRef.afterClosed().subscribe(res => {
-      // received data from dialog-component
-      console.log(res.data)
+    dialogRef.afterClosed().subscribe(res => {      
+      console.log(res)
     })
   }
 }

@@ -8,6 +8,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export interface RemindersData {
   reminderHeader: string;
   reminderText: string;
+  scheduledTime : string;
   id: number;
 }
 
@@ -17,9 +18,8 @@ export interface RemindersData {
   styleUrls: ['alert-dialog.component.scss']
 })
 export class AlertDialogComponent {
-  reminderHeader: string;
-  reminderText: string;
-  id: number;
+  dialogData : any;
+  action:string;
 
   @ViewChild('picker') picker: any;
 
@@ -45,8 +45,6 @@ export class AlertDialogComponent {
   public dateControl = new FormControl(new Date(2021, 9, 4, 5, 6, 7));
   public dateControlMinMax = new FormControl(new Date());
 
-  
-
   public listColors = ['primary', 'accent', 'warn'];
 
   public stepHours = [1, 2, 3, 4, 5];
@@ -56,8 +54,9 @@ export class AlertDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<AlertDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: RemindersData,
-    private http: HttpClient, private zone: NgZone) {
-    console.log(this.data)
+    private http: HttpClient, private zone: NgZone) {   
+    this.dialogData = {...data};
+    this.action = this.dialogData.action;
   }
 
   ngOnInit() {
@@ -90,6 +89,10 @@ export class AlertDialogComponent {
     const now = new Date();
     this.maxDate = moment(now).add(1,'d');
     //this.maxDate.setDate(now.getDate() + 1);
+  }
+
+  doAction(){
+    this.dialogRef.close({event:this.action,data:this.dialogData});
   }
 
   onNoClick(): void {
