@@ -16,7 +16,7 @@ export class ReminderService {
         private router: Router,
         private http: HttpClient
     ) {
-        this.reminderSubject = new BehaviorSubject<Reminder>(JSON.parse(localStorage.getItem('user')));        
+        this.reminderSubject = new BehaviorSubject<Reminder>(JSON.parse(localStorage.getItem('remindersList')));        
         this.reminder = this.reminderSubject.asObservable();
     }
 
@@ -32,8 +32,28 @@ export class ReminderService {
         return this.http.get<User[]>(`${environment.apiUrl}/reminders`);
     }
 
+    getReminderById(id: string) {
+        return this.http.get<User>(`${environment.apiUrl}/reminders/${id}`);
+    }
+
+    update(id, params) {
+        return this.http.put(`${environment.apiUrl}/reminders/${id}`, params)
+            .pipe(map(x => {
+                // update stored user if the logged in user updated their own record
+                if (id == this.reminderValue.id) {
+                    // update local storage
+                    const reminder = { ...this.reminderValue, ...params };
+                    localStorage.setItem('remindersList', JSON.stringify(reminder));
+                    
+                    // publish updated user to subscribers
+                    this.reminderSubject.next(reminder);
+                }
+                return x;
+            }));
+    }
+
     delete(id: string) {
-        return this.http.delete(`${environment.apiUrl}/users/${id}`)
+        return this.http.delete(`${environment.apiUrl}/reminders/${id}`)
             .pipe(map(x => {                
                 return x;
             }));

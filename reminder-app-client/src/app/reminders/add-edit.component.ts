@@ -40,9 +40,9 @@ export class AddEditComponent implements OnInit {
         });
 
         if (!this.isAddMode) {
-            // this.reminderService.getById(this.id)
-            //     .pipe(first())
-            //     .subscribe(x => this.form.patchValue(x));
+            this.reminderService.getReminderById(this.id)
+                .pipe(first())
+                .subscribe(x => this.form.patchValue(x));
         }
     }
 
@@ -64,7 +64,7 @@ export class AddEditComponent implements OnInit {
         if (this.isAddMode) {
             this.createReminder();
         } else {
-            //this.updateUser();
+            this.updateReminder();
         }
     }
 
@@ -83,18 +83,18 @@ export class AddEditComponent implements OnInit {
             });
     }
 
-    // private updateUser() {
-    //     this.reminderService.update(this.id, this.form.value)
-    //         .pipe(first())
-    //         .subscribe({
-    //             next: () => {
-    //                 this.alertService.success('Update successful', { keepAfterRouteChange: true });
-    //                 this.router.navigate(['../../'], { relativeTo: this.route });
-    //             },
-    //             error: error => {
-    //                 this.alertService.error(error);
-    //                 this.loading = false;
-    //             }
-    //         });
-    // }
+    private updateReminder() {
+        this.reminderService.update(this.id, this.form.value)
+            .pipe(first())
+            .subscribe({
+                next: () => {
+                    this.alertService.success('Update successful', { keepAfterRouteChange: true });
+                    this.router.navigate(['../../'], { relativeTo: this.route });
+                },
+                error: error => {
+                    this.alertService.error(error);
+                    this.loading = false;
+                }
+            });
+    }
 }

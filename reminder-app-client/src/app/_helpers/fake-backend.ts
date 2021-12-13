@@ -23,18 +23,22 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return authenticate();
                 case url.endsWith('/users/register') && method === 'POST':
                     return register();
-                case url.endsWith('/users') && method === 'GET':
-                    return getUsers();
-                case url.match(/\/users\/\d+$/) && method === 'GET':
-                    return getUserById();
-                case url.match(/\/users\/\d+$/) && method === 'PUT':
-                    return updateUser();
-                case url.match(/\/users\/\d+$/) && method === 'DELETE':
-                    return deleteUser();
                 case url.endsWith('/reminders/add') && method === 'POST':
                     return addReminder();
+                case url.endsWith('/users') && method === 'GET':
+                    return getUsers();
                 case url.endsWith('/reminders') && method === 'GET':
-                        return getReminders();
+                    return getReminders();
+                case url.match(/\/users\/\d+$/) && method === 'GET':
+                    return getUserById();
+                case url.match(/\/reminders\/\d+$/) && method === 'GET':
+                    return getReminderById();
+                case url.match(/\/users\/\d+$/) && method === 'PUT':
+                    return updateUser();
+                case url.match(/\/reminders\/\d+$/) && method === 'PUT':
+                    return updateReminder();
+                case url.match(/\/users\/\d+$/) && method === 'DELETE':
+                    return deleteUser();
                 case url.match(/\/reminders\/\d+$/) && method === 'DELETE':
                     return deleteReminder();
                 default:
@@ -74,15 +78,18 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function addReminder(){
             if (!isLoggedIn()) return unauthorized(); 
-
+            debugger
             const reminder = body
+            
             if (reminders.find(x => x.eventId === reminder.eventId)) {
                 return error('Event Id "' + reminder.eventId + '" is already taken')
             }
 
-            reminder.id = reminders.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
+            reminder.id = reminders.length ? Math.max(...reminders.map(x => x.id)) + 1 : 1;
+            reminder.id = reminder.id == undefined ? 1 : reminder.id;
             const loggedUser = loggedInUser;
             reminder.createdBy = loggedUser && loggedUser.length != 0 ? loggedUser.id : reminder.id ;
+           
             reminders.push(reminder);
             localStorage.setItem(remindersKey, JSON.stringify(reminders));
             return ok();
@@ -104,15 +111,42 @@ export class FakeBackendInterceptor implements HttpInterceptor {
            
             return ok(basicDetails(user));
         }
+        function getReminderById() {
+            debugger
+            if (!isLoggedIn()) return unauthorized();
+
+            const reminder = reminders.find(x => x.id === idFromUrl());
+           
+            return ok(reminderDetails(reminder));
+        }
 
         function getReminders(){
+            debugger
             if (!isLoggedIn()) return unauthorized();  
             const createdBy = loggedInUser.id;
-            let currentReminders = JSON.parse(localStorage.getItem(remindersKey)) || [];;
-            let remindersList = [currentReminders.filter(x => x.createdBy == createdBy)];
+            let currentReminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
+            let remindersList = currentReminders && currentReminders.length != undefined ? [currentReminders.filter(x => x.createdBy == createdBy)] : currentReminders;
+            if(remindersList.length === undefined){
+                return ok([reminderDetails(remindersList)]);
+            }
             remindersList = remindersList.length > 0 ? remindersList[0] : remindersList;
             return ok(remindersList.map(x => reminderDetails(x)));
         }
+        function updateReminder() {
+            if (!isLoggedIn()) return unauthorized();
+
+            let params = body;
+            let reminder = reminders.find(x => x.id === idFromUrl());
+
+            
+
+            // update and save user
+            Object.assign(reminder, params);
+            localStorage.setItem(remindersKey, JSON.stringify(reminder));
+
+            return ok();
+        }
+
 
         function updateUser() {
             if (!isLoggedIn()) return unauthorized();
