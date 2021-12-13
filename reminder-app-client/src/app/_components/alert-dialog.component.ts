@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, Optional  } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 export interface RemindersData {
+    reminderHeader : string;
     reminderText: string;
     id: number;
   }

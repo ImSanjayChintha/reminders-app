@@ -1,23 +1,20 @@
 import {Component} from '@angular/core';
 
 export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
+  text: string;
+  header : string;
+  status : string,
+  scheduledTime : string,
+  id: number;
+  actions : any;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
+  {id: 1, header:'Morning Reminder',status:'in 30 mins',scheduledTime : 'Today 05:45', text: 'Hydrogen', actions : []},
+  {id: 2, header:'Tea break',status:'in 10 mins',scheduledTime : 'Today 05:45', text: 'Remind me every 40 mins', actions : []},
+  {id: 3, header:'Marriage Party',status:'tomorrow',scheduledTime : 'Today 05:45', text: 'Lithium', actions : []},
+  {id: 4, header:'Interview',status:'in 6 days',scheduledTime : 'Today 05:45', text: 'Beryllium', actions : []},
+  {id: 5, header:'Interview',status:'in 2 days',scheduledTime : 'Today 05:45', text: 'Boron', actions : []},  
 ];
 
 /**
@@ -29,6 +26,6 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: 'list.component.html',
 })
 export class ListComponent {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  displayedColumns: string[] = ['id', 'header', 'text','scheduledTime','status',"actions"];
   dataSource = ELEMENT_DATA;
 }

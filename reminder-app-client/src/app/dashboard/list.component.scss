@@ -1,0 +1,26 @@
+table{
+    width: 100%;
+   }
+table.mat-table {
+    display: table;
+    table-layout: fixed;
+    width: 80%;
+    overflow: scroll;
+    
+}
+mat-cell,
+mat-header-cell {    
+    align-items: center;
+}
+
+  .mat-column-actions {
+    display: flex;
+    padding: 15px 0;
+    justify-content: center;
+  }
+  .mat-header-row, .mat-row {
+    height: 10px !important;
+  }
+  .mat-button{
+      line-height: 10px !important;
+  }

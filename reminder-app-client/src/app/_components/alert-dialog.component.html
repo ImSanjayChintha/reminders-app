@@ -1,13 +1,22 @@
-<h1 mat-dialog-title>Reminder :: <strong>{{action}}</strong></h1>
-<div mat-dialog-content>
-  <mat-form-field *ngIf="action != 'Delete'; else elseTemplate">
-    <input placeholder="{{action}} Name" matInput [(ngModel)]="local_data.reminderText">
+<h1 mat-dialog-title>What do you want us to remind?</h1>
+<div mat-dialog-content class="dialog-form-fields">
+  <mat-form-field>
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="data.reminderHeader">
   </mat-form-field>
-  <ng-template #elseTemplate>
-    Sure to delete <b>{{local_data.reminderText}}</b>?
-  </ng-template>
+  <mat-form-field>
+    <mat-label>Description</mat-label>
+    <input matInput [(ngModel)]="data.reminderText">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Schedule Time</mat-label>
+    <input matInput [(ngModel)]="data.reminderText">
+  </mat-form-field>
+  <mat-form-field>
+   
+  </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="doAction()">{{action}}</button>
+  <button mat-button (click)="doAction()">Remind me!</button>
   <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
 </div>
