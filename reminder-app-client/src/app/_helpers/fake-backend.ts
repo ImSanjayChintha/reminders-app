@@ -78,7 +78,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function addReminder(){
             if (!isLoggedIn()) return unauthorized(); 
-            debugger
+            
             const reminder = body
             
             if (reminders.find(x => x.eventId === reminder.eventId)) {
@@ -112,7 +112,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             return ok(basicDetails(user));
         }
         function getReminderById() {
-            debugger
+            
             if (!isLoggedIn()) return unauthorized();
 
             const reminder = reminders.find(x => x.id === idFromUrl());
@@ -121,7 +121,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         }
 
         function getReminders(){
-            debugger
+            
             if (!isLoggedIn()) return unauthorized();  
             const createdBy = loggedInUser.id;
             let currentReminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
