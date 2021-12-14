@@ -15,9 +15,10 @@
             <!-- <td>{{reminder.id}}</td> -->
             <td>{{reminder.eventid}}</td>
             <td>{{reminder.eventname}}</td>
-            <td>{{reminder.scheduledTime}}</td>
+            <td>{{ reminder.scheduledTime | date: 'dd/MM/yyyy hh:mm:ss' : 'offset' }}</td>
+            <!-- <td>{{reminder.scheduledTime}}</td> -->
             <td style="white-space: nowrap">
-                <a routerLink="edit/{{reminder.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>
+                <a routerLink="edit/{{reminder.eventid}}/{{reminder.revision}}" class="btn btn-sm btn-primary mr-1">Edit</a>
                 <button (click)="deleteReminder(reminder.id)" class="btn btn-sm btn-danger btn-delete-user" [disabled]="reminder.isDeleting">
                     <span *ngIf="reminder.isDeleting" class="spinner-border spinner-border-sm"></span>
                     <span *ngIf="!reminder.isDeleting">Delete</span>

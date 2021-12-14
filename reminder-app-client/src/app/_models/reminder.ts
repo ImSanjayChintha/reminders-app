@@ -5,5 +5,6 @@ export class Reminder {
     eventdescription: string;
     scheduledTime: string;
     is_completed : boolean;
+    revision:string;
     createdBy : string;
 }

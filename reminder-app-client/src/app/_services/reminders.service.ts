@@ -38,9 +38,10 @@ export class ReminderService {
         return this.http.get<Reminder[]>(`${environment.apiUrl}/reminders/`);
     }
 
-    getReminderById(id: string) {
-        var reminderId = parseInt(id);
-        return this.http.get<Reminder>(`${environment.apiUrl}/reminders/${reminderId}/`);
+    getReminderById(id: string, revision:string) {
+        
+        
+        return this.http.get<Reminder>(`${environment.apiUrl}/reminders/${id}/${revision}`);
     }
 
     update(id, params) {

@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from sqlalchemy import func
 import os
 import uuid
 from datetime import datetime, timedelta
@@ -46,6 +47,7 @@ class Reminder(db.Model):
     eventdescription = db.Column(db.String(50), nullable=False)
     scheduledTime = db.Column(db.DateTime(50), nullable=True)
     is_completed = db.Column(db.Boolean, default=False)
+    revision = db.Column(db.Integer, default=False, autoincrement=True)
     createdBy = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
@@ -195,7 +197,7 @@ def update_user(current_user, id):
         return make_response(
             'Could not proccess',
             403,
-            {'WWW-Authenticate': 'Basic realm ="All fields are required. !!"'}
+            {'message': 'All fields are required. !!'}
         )
 
     user = User.query.filter_by(id=id).first_or_404()
@@ -232,14 +234,15 @@ def createReminder(current_user):
         return make_response(jsonify({
             'error': 'Bad Request',
          			'message': 'Event Details required'
-        }), 404)
+        }), 404)    
 
     r = Reminder(
         eventid = data["eventid"],
         eventname = data["eventname"],
         eventdescription = data["eventdescription"],
-        scheduledTime = datetime.now(),
+        scheduledTime = datetime.strptime(str(data["scheduledTime"]),"%Y-%m-%dT%H:%M"),
         is_completed = data["is_completed"],
+        revision = 0,
         createdBy = current_user.id
     )
     db.session.add(r)
@@ -254,18 +257,21 @@ def get_reminders(current_user):
 		{
             'id': reminder.id,
             'eventid': reminder.eventid, 'eventname': reminder.eventname, 'eventdescription': reminder.eventdescription,
+            'revision' : reminder.revision,
             'scheduledTime': reminder.scheduledTime,
             'is_completed': reminder.is_completed, 'createdBy': current_user.id
         } for reminder in Reminder.query.filter_by(createdBy=current_user.id).all()
 	]))
 
-@app.route('/reminders/<id>/')
+@app.route('/reminders/<id>/<revision>', methods=['GET'])
 @token_required
-def get_reminder(current_user, id):
-
-	reminder = Reminder.query.filter_by(id=id).filter_by(createdBy=current_user.id).first_or_404()
-	return make_response(jsonify({
+def get_reminder(current_user, id,revision):
+    #revision = int(request.form.get('revision')) if request.form.get('revision') != None else 0
+    revisionid = int(revision)
+    reminder = Reminder.query.filter_by(eventid=id).filter_by(createdBy=current_user.id).filter_by(revision=revisionid).first_or_404()
+    return make_response(jsonify({
              'id': reminder.id,
+             'revision' : reminder.revision,
             'eventid': reminder.eventid, 'eventname': reminder.eventname, 'eventdescription': reminder.eventdescription,
             'scheduledTime': reminder.scheduledTime,
             'is_completed': reminder.is_completed, 'createdBy': current_user.id
@@ -281,12 +287,20 @@ def update_reminder(current_user, id):
             403,
             {'message': 'Basic realm ="Event fields are required. !!"'}
         )
-    queryId = int(id)  
+    #queryId = int(id)  
 
-    reminder = Reminder.query.filter_by(id=queryId).first_or_404()
-    reminder.eventid = data["eventid"]
-    reminder.eventname = data["eventname"]
-    reminder.eventdescription = data["eventdescription"]   
+    revision = Reminder.query.with_entities(func.max(Reminder.revision)).all()[0][0]
+
+    r = Reminder(
+        eventid = data["eventid"],
+        eventname = data["eventname"],
+        eventdescription = data["eventdescription"],
+        scheduledTime = datetime.strptime(str(data["scheduledTime"]),"%Y-%m-%dT%H:%M"),
+        is_completed = data["is_completed"],        
+        createdBy = current_user.id,
+        revision = revision + 1
+    )  
+    db.session.add(r)
     db.session.commit()
     return make_response(jsonify({'message': "Updated successfully"}), 200)
 
