@@ -11,8 +11,8 @@
     </thead>
     <tbody>
         <tr *ngFor="let user of users">
-            <td>{{user.firstName}}</td>
-            <td>{{user.lastName}}</td>
+            <td>{{user.firstname}}</td>
+            <td>{{user.lastname}}</td>
             <td>{{user.username}}</td>
             <td style="white-space: nowrap">
                 <a routerLink="edit/{{user.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>

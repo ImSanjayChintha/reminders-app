@@ -21,10 +21,12 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this.form = this.formBuilder.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
+            firstname: ['', Validators.required],
+            lastname: ['', Validators.required],
             username: ['', Validators.required],
-            password: ['', [Validators.required, Validators.minLength(6)]]
+            password: ['', [Validators.required, Validators.minLength(6)]],
+            is_admin : [false, Validators.required],
+            createdBy : [''],
         });
     }
 
@@ -32,10 +34,12 @@ export class RegisterComponent implements OnInit {
     get f() { return this.form.controls; }
 
     onSubmit() {
+        
         this.submitted = true;
 
         // reset alerts on submit
         this.alertService.clear();
+        this.form.value.createdBy = this.form.value.username;
 
         // stop here if form is invalid
         if (this.form.invalid) {

@@ -1,7 +1,9 @@
 ﻿<div class="p-4">
     <div class="container">
-        <h1>Hi {{user.firstName}}!</h1>
-        <p>You're logged in with Angular 10!!</p>
+        <h1>Hi {{user.firstname}}!</h1>
+        
+        <p *ngIf="!user.is_admin">You're logged as user !!</p>
+        <p *ngIf="user.is_admin">You're logged as admin !!</p>
         <p><a routerLink="/users">Manage Users</a></p>
     </div>
 </div>

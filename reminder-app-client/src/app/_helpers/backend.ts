@@ -7,14 +7,16 @@ import { delay, materialize, dematerialize } from 'rxjs/operators';
 const usersKey = 'userslist';
 const currentUserKey = 'user';
 const remindersKey = 'remindersList';
-let users = JSON.parse(localStorage.getItem(usersKey)) || [];
-let reminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
+let users = [];
+let reminders = [];
 
 @Injectable()
-export class FakeBackendInterceptor implements HttpInterceptor {
+export class BackendInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const { url, method, headers, body } = request;
-        let loggedInUser:any = JSON.parse(localStorage.getItem(currentUserKey)) || [];;
+        let loggedInUser:any = {};
+        
+
         return handleRoute();
 
         function handleRoute() {
@@ -96,6 +98,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         }
 
         function getUsers() {
+            
             if (!isLoggedIn()) return unauthorized();            
             const createdBy = loggedInUser.id;
             let currentUsers = JSON.parse(localStorage.getItem(usersKey)) || [];;
@@ -105,11 +108,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         }
 
         function getUserById() {
-            if (!isLoggedIn()) return unauthorized();
+            
+            // if (!isLoggedIn()) return unauthorized();
 
-            const user = users.find(x => x.id === idFromUrl());
+            // const user = users.find(x => x.id === idFromUrl());
            
-            return ok(basicDetails(user));
+            //return ok(basicDetails(user));
+            return ok();
         }
         function getReminderById() {
             
@@ -199,8 +204,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         }
 
         function basicDetails(user) {
-            const { id, username, firstName, lastName, createdBy } = user;
-            return { id, username, firstName, lastName, createdBy };
+            const { id, username, firstname, lastname, createdBy } = user;
+            return { id, username, firstname, lastname, createdBy };
         }
 
         function reminderDetails(reminder){
@@ -219,9 +224,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     }
 }
 
-export const fakeBackendProvider = {
+export const backendProvider = {
     // use fake backend in place of Http service for backend-less development
     provide: HTTP_INTERCEPTORS,
-    useClass: FakeBackendInterceptor,
+    useClass: BackendInterceptor,
     multi: true
 };

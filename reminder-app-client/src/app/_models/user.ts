@@ -2,8 +2,9 @@
     id: string;
     username: string;
     password: string;
-    firstName: string;
-    lastName: string;
+    firstname: string;
+    lastname: string;
     createdBy: string;
+    is_admin:string;
     token: string;
 }

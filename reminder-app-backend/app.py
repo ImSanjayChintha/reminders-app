@@ -7,10 +7,15 @@ from datetime import datetime, timedelta
 from  werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from functools import wraps
+from flask_cors import CORS
+
 
 #Init app
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+CORS(app)
+
 # Database
 app.config['SECRET_KEY']='secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'db.sqlite')
@@ -24,13 +29,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
     firstname = db.Column(db.String(50),nullable=False)
     lastname = db.Column(db.String(50),nullable=False)
-    userid = db.Column(db.String(50), unique=True,nullable=False)
+    username = db.Column(db.String(50), unique=True,nullable=False)
     password = db.Column(db.String(50),nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     createdBy = db.Column(db.String(50),nullable=False)
 
     def __repr__(self):
-        return '<User {}>'.format(self.userid)
+        return '<User {}>'.format(self.username)
 
 class Reminder(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
@@ -60,7 +65,7 @@ def token_required(f):
             # decoding the payload to fetch the stored details
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
             current_user = User.query\
-                .filter_by(userid = data['userid'])\
+                .filter_by(username = data['username'])\
                 .first()
         except:
             return jsonify({
@@ -82,7 +87,8 @@ def home():
 def get_users(current_user):
 	return make_response(jsonify([
 		{
-			'userid': user.userid, 'firstname': user.firstname, 'lastname': user.lastname,
+            'id' : user.id,
+			'username': user.username, 'firstname': user.firstname, 'lastname': user.lastname,
 			'is_admin': user.is_admin,
             'requestby' : current_user.createdBy
 			} for user in User.query.filter_by(createdBy=current_user.createdBy).all()
@@ -91,19 +97,19 @@ def get_users(current_user):
 @app.route('/users/', methods=['POST'])
 def create_user():
 	data = request.get_json()
-	if not 'userid' in data or not 'password' in data:
+	if not 'username' in data or not 'password' in data:
 		return make_response(jsonify({
 			'error': 'Bad Request',
-			'message': 'userid or password not given'
+			'message': 'username or password not given'
 		}), 400)
-	if len(data['userid']) < 4 or len(data['firstname']) < 6 or len(data['lastname']) < 1:
+	if len(data['username']) < 4 or len(data['lastname']) < 1:
 		return make_response(jsonify({
 			'error': 'Bad Request',
-			'message': 'userid and firstname must be contain minimum of 4 letters and lastname atleast one letter'
+			'message': 'username must be contain minimum of 4 letters and lastname atleast one letter'
 		}), 400)
     
 	u = User(
-			userid = data['userid'], 
+			username = data['username'], 
 			firstname = data['firstname'],
             lastname = data['lastname'],
             password = generate_password_hash(data['password']),
@@ -113,7 +119,7 @@ def create_user():
 	db.session.add(u)
 	db.session.commit()
 	return make_response(jsonify({
-		'userid': u.userid, 'firstname': u.firstname, 
+		'username': u.username, 'firstname': u.firstname, 
 		'lastname': u.lastname, 'is_admin': u.is_admin 
 	}),201)
 
@@ -124,7 +130,8 @@ def get_user(current_user,id):
 	
 	user = User.query.filter_by(id=id).first_or_404()
 	return make_response(jsonify({
-		'userid': user.userid, 'firstname': user.firstname, 
+        'id' : user.id,
+		'username': user.username, 'firstname': user.firstname, 
 		'lastname': user.lastname, 'is_admin': user.is_admin
 		}),200)
 
@@ -133,7 +140,7 @@ def login():
     # creates dictionary of form data
     auth = request.get_json()
   
-    if not auth or not auth.get('userid') or not auth.get('password'):
+    if not auth or not auth.get('username') or not auth.get('password'):
         # returns 401 if any email or / and password is missing
         return make_response(
             'Could not verify',
@@ -142,7 +149,7 @@ def login():
         )
   
     user = User.query\
-        .filter_by(userid = auth.get('userid'))\
+        .filter_by(username = auth.get('username'))\
         .first()
   
     if not user:
@@ -156,11 +163,12 @@ def login():
     if check_password_hash(user.password, auth.get('password')):
         # generates the JWT Token
         token = jwt.encode({
-            'userid': user.userid,
+            'username': user.username,
             'exp' : datetime.utcnow() + timedelta(minutes = 30)
         }, app.config['SECRET_KEY'])
   
-        return jsonify({'token' : token})
+        return jsonify({'token' : token,'username': user.username, 'firstname': user.firstname, 
+		'lastname': user.lastname, 'is_admin': user.is_admin})
     # returns 403 if password is wrong
     return make_response(
         'Could not verify',
@@ -168,11 +176,11 @@ def login():
         {'WWW-Authenticate' : 'Basic realm ="Wrong Password !!"'}
     )
 
-@app.route('/users/<id>', methods=['PUT'])
+@app.route('/users/<id>/', methods=['PUT'])
 @token_required
 def update_user(current_user,id):
     data = request.get_json()
-    if 'firstname' not in data or 'lastname' not in data or 'userid' not in data:        
+    if 'firstname' not in data or 'lastname' not in data or 'username' not in data:        
         return make_response(
         'Could not proccess',
         403,
@@ -182,7 +190,7 @@ def update_user(current_user,id):
     user = User.query.filter_by(id=id).first_or_404()
     user.firstname = data["firstname"]
     user.lastname = data["lastname"]
-    user.userid = data["userid"]
+    user.username = data["username"]
     if "is_admin" in data:
         user.is_admin = data["is_admin"]
     db.session.commit()
