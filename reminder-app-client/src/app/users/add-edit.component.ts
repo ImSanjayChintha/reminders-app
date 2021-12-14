@@ -12,6 +12,7 @@ export class AddEditComponent implements OnInit {
     isAddMode: boolean;
     loading = false;
     submitted = false;
+    currentUser : any = {};
 
     constructor(
         private formBuilder: FormBuilder,
@@ -39,6 +40,8 @@ export class AddEditComponent implements OnInit {
             password: ['', passwordValidators],
             createdBy : [''],
         });
+
+        this.currentUser = this.accountService.userValue;
 
         if (!this.isAddMode) {
             this.accountService.getById(this.id)
@@ -70,6 +73,9 @@ export class AddEditComponent implements OnInit {
     }
 
     private createUser() {
+        
+        this.form.value.createdBy = this.currentUser.createdBy;
+
         this.accountService.register(this.form.value)
             .pipe(first())
             .subscribe({
@@ -85,6 +91,7 @@ export class AddEditComponent implements OnInit {
     }
 
     private updateUser() {
+        this.form.value.createdBy = this.currentUser.id;
         this.accountService.update(this.id, this.form.value)
             .pipe(first())
             .subscribe({

@@ -1,8 +1,9 @@
 export class Reminder {
     id: string;
-    eventId : string;
-    header: string;
-    text: string;
+    eventid : string;
+    eventname: string;
+    eventdescription: string;
     scheduledTime: string;
+    is_completed : boolean;
     createdBy : string;
 }

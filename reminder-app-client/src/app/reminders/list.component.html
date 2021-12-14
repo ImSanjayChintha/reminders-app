@@ -3,17 +3,18 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th style="width: 30%">Id</th>
-            <th style="width: 30%">Event Id</th>
-            <th style="width: 30%">Event Title</th>           
+            <!-- <th style="width: 30%">Id</th> -->
+            <th style="width: 30%">Reminder Id</th>
+            <th style="width: 30%">Reminder Title</th>  
+            <th style="width: 30%">Scheduled Time</th>         
             <th style="width: 10%"></th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let reminder of reminders">
-            <td>{{reminder.id}}</td>
-            <td>{{reminder.eventId}}</td>
-            <td>{{reminder.header}}</td>
+            <!-- <td>{{reminder.id}}</td> -->
+            <td>{{reminder.eventid}}</td>
+            <td>{{reminder.eventname}}</td>
             <td>{{reminder.scheduledTime}}</td>
             <td style="white-space: nowrap">
                 <a routerLink="edit/{{reminder.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>

@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { ReminderService, AlertService } from '@app/_services';
+import { ReminderService, AlertService, AccountService } from '@app/_services';
 
 @Component({ templateUrl: 'add-edit.component.html' })
 export class AddEditComponent implements OnInit {
@@ -12,16 +12,19 @@ export class AddEditComponent implements OnInit {
     isAddMode: boolean;
     loading = false;
     submitted = false;
+    currentUser : any = {};
 
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
         private reminderService: ReminderService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private accountService : AccountService
     ) {}
 
     ngOnInit() {
+        
         this.id = this.route.snapshot.params['id'];
         this.isAddMode = !this.id;
         
@@ -31,12 +34,16 @@ export class AddEditComponent implements OnInit {
             passwordValidators.push(Validators.required);
         }
 
+        this.currentUser = this.accountService.userValue;
+
+
         this.form = this.formBuilder.group({
-            eventId: ['', Validators.required],
-            header: ['', Validators.required],
-            text: ['', Validators.required],
-            //scheduledTime: ['', Validators.required],
-            createdBy : [''],
+            eventid: ['', Validators.required],
+            eventname: ['', Validators.required],
+            eventdescription: ['', Validators.required],
+            is_completed : [false],
+            scheduledTime: ['',],
+            createdBy : [this.currentUser.id],
         });
 
         if (!this.isAddMode) {
