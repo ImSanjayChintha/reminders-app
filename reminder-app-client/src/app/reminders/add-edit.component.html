@@ -30,20 +30,11 @@
         </div>
         <div class="form-group col">
             <label for="scheduledTime">Schedule Time</label>
-            <!-- <input matInput [(ngModel)]="scheduledTime" [ngxMatDatetimePicker]="picker" placeholder="Choose a date"
-                [formControl]="dateControl" [min]="minDate"> -->
+          
                 <input type="datetime-local" matInput name="scheduledTime" formControlName="scheduledTime"
                 [ngClass]="{ 'is-invalid': submitted && f.eventdescription.errors }" 
                 class="form-control">
-            <!-- <mat-form-field appearance="fill">
-                <input matInput [(ngModel)]="scheduledTime" [ngxMatDatetimePicker]="picker"
-                    placeholder="Choose a date" [formControl]="dateControl" [min]="minDate" >
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <ngx-mat-datetime-picker #picker [showSpinners]="showSpinners" [showSeconds]="showSeconds" [stepHour]="stepHour"
-                    [stepMinute]="stepMinute" [stepSecond]="stepSecond" [touchUi]="touchUi" [color]="color"
-                    [enableMeridian]="enableMeridian">
-                </ngx-mat-datetime-picker>
-            </mat-form-field> -->
+          
         </div>
 
     </div>

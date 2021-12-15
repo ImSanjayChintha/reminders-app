@@ -19,26 +19,6 @@ export class AddEditComponent implements OnInit {
     submitted = false;
     currentUser: any = {};
     eventId :string;
-    @ViewChild('picker') picker: any;
-
-    public scheduledTime: string ="";
-    public date: moment.Moment;
-    public disabled = false;
-    public showSpinners = true;
-    public showSeconds = false;
-    public touchUi = false;
-    public enableMeridian = false;
-    public minDate: moment.Moment;
-    public maxDate: moment.Moment;
-    public stepHour = 1;
-    public stepMinute = 1;
-    public stepSecond = 1;
-    public color: ThemePalette = 'accent';
-
-    public dateControl = new FormControl(new Date(2021, 9, 4, 5, 6, 7));
-    public stepHours = [1, 2, 3, 4, 5];
-    public stepMinutes = [1, 5, 10, 15, 20, 25];
-    public stepSeconds = [1, 5, 10, 15, 20, 25];
 
     constructor(
         private formBuilder: FormBuilder,
@@ -50,18 +30,12 @@ export class AddEditComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        
+        //parameters of revision and event id
         this.id = this.route.snapshot.params['id'];
         this.revision = this.route.snapshot.params['revision']
-        this.isAddMode = !this.id;
-        this.date = moment(new Date(2021, 9, 4, 5, 6, 7));
+        this.isAddMode = !this.id;       
 
-        // password not required in edit mode
-        const passwordValidators = [Validators.minLength(6)];
-        if (this.isAddMode) {
-            passwordValidators.push(Validators.required);
-        }
-
+      
         this.currentUser = this.accountService.userValue;
 
 
@@ -93,34 +67,7 @@ export class AddEditComponent implements OnInit {
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
-    toggleMinDate(evt: any) {
-        if (evt.checked) {
-            this._setMinDate();
-        } else {
-            this.minDate = null;
-        }
-    }
-
-    toggleMaxDate(evt: any) {
-        if (evt.checked) {
-            this._setMaxDate();
-        } else {
-            this.maxDate = null;
-        }
-    }
-
-    private _setMinDate() {
-        const now = new Date();
-        this.minDate = moment(now);
-        //this.minDate.setDate(now.getDate() - 1);
-    }
-
-
-    private _setMaxDate() {
-        const now = new Date();
-        this.maxDate = moment(now).add(1, 'd');
-        //this.maxDate.setDate(now.getDate() + 1);
-    }
+    
 
     onSubmit() {
         this.submitted = true;
