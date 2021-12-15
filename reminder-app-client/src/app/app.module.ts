@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { AppComponent } from './app.component';
-import { AlertComponent, AlertDialogComponent } from './_components';
+import { AlertComponent } from './_components';
 import { HomeComponent } from './home';;
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
@@ -51,10 +51,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
         FormsModule],
     declarations: [
         AppComponent,
-        AlertComponent,
-        AlertDialogComponent,
-        HomeComponent,
-        //RemindersComponent
+        AlertComponent,        
+        HomeComponent        
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
