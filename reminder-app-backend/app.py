@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request, make_response
 from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 from sqlalchemy import func
 import os
 import uuid
@@ -258,7 +257,7 @@ def get_reminders(current_user):
             'id': reminder.id,
             'eventid': reminder.eventid, 'eventname': reminder.eventname, 'eventdescription': reminder.eventdescription,
             'revision' : reminder.revision,
-            'scheduledTime': reminder.scheduledTime,
+            'scheduledTime': str(reminder.scheduledTime),
             'is_completed': reminder.is_completed, 'createdBy': current_user.id
         } for reminder in Reminder.query.filter_by(createdBy=current_user.id).all()
 	]))
@@ -285,24 +284,26 @@ def update_reminder(current_user, id):
         return make_response(
             'Could not proccess',
             403,
-            {'message': 'Basic realm ="Event fields are required. !!"'}
+            {'message': 'Reminder fields are required.'}
+        )        
+    
+    try:
+        revision = Reminder.query.with_entities(func.max(Reminder.revision)).all()[0][0]
+        r = Reminder(
+            eventid = data["eventid"],
+            eventname = data["eventname"],
+            eventdescription = data["eventdescription"],
+            scheduledTime = datetime.strptime(str(data["scheduledTime"]),"%Y-%m-%dT%H:%M"),
+            is_completed = data["is_completed"],        
+            createdBy = current_user.id,
+            revision = revision + 1
         )
-    #queryId = int(id)  
-
-    revision = Reminder.query.with_entities(func.max(Reminder.revision)).all()[0][0]
-
-    r = Reminder(
-        eventid = data["eventid"],
-        eventname = data["eventname"],
-        eventdescription = data["eventdescription"],
-        scheduledTime = datetime.strptime(str(data["scheduledTime"]),"%Y-%m-%dT%H:%M"),
-        is_completed = data["is_completed"],        
-        createdBy = current_user.id,
-        revision = revision + 1
-    )  
-    db.session.add(r)
-    db.session.commit()
-    return make_response(jsonify({'message': "Updated successfully"}), 200)
+        db.session.add(r)
+        db.session.commit()
+    except Exception as error:
+        return make_response(jsonify({'message': "Please schedule the reminder"}), 404)
+    
+    return make_response(jsonify({'message': "Reminder added successfully"}), 200)
 
 @app.route('/reminders/<id>/', methods=['DELETE'])
 @token_required
@@ -311,6 +312,16 @@ def delete_reminder(current_user, id):
 	db.session.delete(reminder)
 	db.session.commit()
 	return make_response(jsonify({'message': "Deleted successfully"}), 200)
+
+@app.route('/autoEventId/', methods=['GET'])
+def auto_generated_id():
+     id = Reminder.query.with_entities(func.max(Reminder.id)).all()[0][0]
+     if id == None:
+        id = 1
+     else:
+        id = id + 1
+     eventId = "ER" + str(id)
+     return{"eventid":eventId}
 
 
 if __name__ == '__main__':

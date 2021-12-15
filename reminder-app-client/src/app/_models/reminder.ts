@@ -3,8 +3,8 @@ export class Reminder {
     eventid : string;
     eventname: string;
     eventdescription: string;
-    scheduledTime: string;
+    scheduledTime: Date;
     is_completed : boolean;
-    revision:string;
+    revision:Date;
     createdBy : string;
 }

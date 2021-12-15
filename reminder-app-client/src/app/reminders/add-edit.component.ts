@@ -18,6 +18,7 @@ export class AddEditComponent implements OnInit {
     loading = false;
     submitted = false;
     currentUser: any = {};
+    eventId :string;
     @ViewChild('picker') picker: any;
 
     public scheduledTime: string ="";
@@ -69,7 +70,7 @@ export class AddEditComponent implements OnInit {
             eventname: ['', Validators.required],
             eventdescription: ['', Validators.required],
             is_completed: [false],
-            scheduledTime: ['',],
+            scheduledTime: ['', Validators.required],
             revision : [this.revision],
             createdBy: [this.currentUser.id],
         });
@@ -78,6 +79,14 @@ export class AddEditComponent implements OnInit {
             this.reminderService.getReminderById(this.id,this.revision)
                 .pipe(first())
                 .subscribe(x => this.form.patchValue(x));
+        }
+        else{
+            this.reminderService.getAutoEventId().pipe(first()).subscribe(data => {
+                // Read the result field from the JSON response.
+                this.eventId = data["eventid"];
+                console.log(data["eventid"]);
+              })
+             
         }
     }
 

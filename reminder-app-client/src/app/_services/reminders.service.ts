@@ -38,11 +38,19 @@ export class ReminderService {
         return this.http.get<Reminder[]>(`${environment.apiUrl}/reminders/`);
     }
 
-    getReminderById(id: string, revision:string) {
-        
+    getReminderById(id: string, revision:string) {       
         
         return this.http.get<Reminder>(`${environment.apiUrl}/reminders/${id}/${revision}`);
     }
+    // getAutoEventId(){
+    //     return this.http.get<string>(`${environment.apiUrl}/autoEventId/`);
+    // }
+
+   
+    getAutoEventId(){
+        return this.http.get<string>(`${environment.apiUrl}/autoEventId/`);
+    }
+
 
     update(id, params) {
         return this.http.put(`${environment.apiUrl}/reminders/${id}/`, params)

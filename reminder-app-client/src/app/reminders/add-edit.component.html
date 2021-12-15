@@ -4,7 +4,7 @@
     <div class="form-row">
         <div class="form-group col">
             <label for="eventid">Event Id</label>
-            <input type="text" formControlName="eventid" class="form-control"
+            <input type="text" formControlName="eventid" class="form-control" [ngModel] = "this.eventId"
                 [ngClass]="{ 'is-invalid': submitted && f.eventid.errors }" />
             <div *ngIf="submitted && f.eventid.errors" class="invalid-feedback">
                 <div *ngIf="f.eventid.errors.required">Event Id is required</div>
@@ -50,7 +50,8 @@
     <div class="form-group">
         <button [disabled]="loading" class="btn btn-primary">
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Save
+            <span *ngIf="isAddMode">Add</span>
+            <span *ngIf="!isAddMode">Add New Version</span>
         </button>
         <a routerLink="/reminders" class="btn btn-link">Cancel</a>
     </div>
