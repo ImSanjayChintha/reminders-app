@@ -31,3 +31,37 @@ To use Backend API, Please change the url in enviornments directory
 In enviornment.ts and enviornment.prod.ts
 
 apiUrl: http://backend-url/
+
+
+# reminders-app-backend
+
+I have developed this app using python 3.9 and SQLite database.
+
+For authentication, I have used to token based authentication. If you register and login back, it will gives token.
+
+auth.py - handles authentication
+
+config.py - imports necessary packages and mantains secret key
+
+models.py - create tables and ORM schems for SQLite database
+
+users.py - manages CRUD on users table
+
+reminders.py - reminders CRUD on reminders table
+
+app.py - entry point of the api
+
+SQLite - Light weight database.
+
+
+To run the app , please following steps:
+
+Git directory> python -m install vnev .venv
+
+Git directory> python -m install --upgrade pip
+
+Git directory> python -m install -r requirements.txt
+
+Git directory> python app.py
+
+Please copy the host the url and paste it in client app. 
