@@ -42,11 +42,7 @@ export class ReminderService {
         
         return this.http.get<Reminder>(`${environment.apiUrl}/reminders/${id}/${revision}`);
     }
-    // getAutoEventId(){
-    //     return this.http.get<string>(`${environment.apiUrl}/autoEventId/`);
-    // }
-
-   
+      
     getAutoEventId(){
         return this.http.get<string>(`${environment.apiUrl}/autoEventId/`);
     }
