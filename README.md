@@ -56,7 +56,9 @@ SQLite - Light weight database.
 
 To run the app , please following steps:
 
-Git directory> python -m install vnev .venv
+Git directory> python -m install venv .venv (installing virtual python enviornment)
+
+Git directory> .venv\scripts\activate  (activating the python enviornment)
 
 Git directory> python -m install --upgrade pip
 
