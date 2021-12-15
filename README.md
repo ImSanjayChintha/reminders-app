@@ -30,4 +30,4 @@ To use Backend API, Please change the url in enviornments directory
 
 In enviornment.ts and enviornment.prod.ts
 
-apiUrl: <API URL>
+apiUrl: http://backend-url/
