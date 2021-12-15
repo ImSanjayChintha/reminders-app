@@ -9,11 +9,16 @@ I have added two screens
 - Reminders : To Add and Delete the reminders.
 
 •	Its Store reminders text, reminder time and a title
+
 •	Store reminders at any URL and it will automatically creates event Id
+
 •	Does NOT allow interaction by non-authenticated users
+
 •	Does NOT allow a user to access reminders submitted by another user
-•	Allows users to store multiple revisions of the same reminder at the same URL (edit/<ReminderId>/<RevisionId>)
-•	Allows users to fetch any revision of any reminder (edit/<ReminderId>/<RevisionId>)
+
+•	Allows users to store multiple revisions of the same reminder at the same URL (edit/ReminderId/RevisionId)
+
+•	Allows users to fetch any revision of any reminder (edit/ReminderId/RevisionId)
 
 To Run the app:
 
