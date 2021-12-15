@@ -146,7 +146,7 @@ export class AddEditComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Reminder added successfully', { keepAfterRouteChange: true });
+                    this.alertService.success('Reminders list refreshed successfully', { keepAfterRouteChange: true });
                     this.router.navigate(['../'], { relativeTo: this.route });
                 },
                 error: error => {
