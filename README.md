@@ -22,8 +22,9 @@ I have added two screens
 
 To Run the app:
 
-<Machine Git Directory>>/npm install
-<Machine Git Directory>>/npm start
+Machine Git Directory>/npm install
+
+Machine Git Directory>/npm start
 
 To use Backend API, Please change the url in enviornments directory
 In enviornment.ts and enviornment.prod.ts
